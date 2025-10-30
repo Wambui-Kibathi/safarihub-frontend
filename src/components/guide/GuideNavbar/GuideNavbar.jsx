@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { useAuth } from '@/context/AuthContext';
-import './GuideNavbar.css';
 
 const GuideNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { currentUser, logout } = useAuth();
+  const currentUser = { name: 'Guide User' };
+  const logout = () => console.log('Logout');
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
