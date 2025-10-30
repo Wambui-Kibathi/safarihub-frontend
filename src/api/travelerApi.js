@@ -55,6 +55,15 @@ const travelerApi = {
     } catch (error) {
       throw error.response?.data?.message || 'Failed to get trips';
     }
+  },
+
+  getDestinations: async () => {
+    try {
+      const response = await axios.get('http://localhost:5000/destinations/');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data?.message || 'Failed to get destinations';
+    }
   }
 };
 
