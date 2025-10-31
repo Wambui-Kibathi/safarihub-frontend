@@ -39,22 +39,6 @@ const Home = () => {
       <section className="destinations">
         <div className="destinations-container">
           <h2 className="destinations-title">Popular Destinations</h2>
-          <div className="destinations-grid">
-            {destinations.map(destination => (
-              <div key={destination.id} className="destination-card">
-                <img 
-                  src={destination.image} 
-                  alt={destination.title}
-                  className="destination-image"
-                />
-                <div className="destination-content">
-                  <h3 className="destination-name">{destination.title}</h3>
-                  <p className="destination-description">{destination.description}</p>
-                  <button className="destination-button">View More</button>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
     </div>

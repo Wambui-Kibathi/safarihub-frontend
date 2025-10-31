@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../context/AuthContext';
 import './Register.css';
 
 const Register = () => {
+  const navigate = useNavigate();
+  const { register } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,6 +13,8 @@ const Register = () => {
     confirmPassword: '',
     role: 'Traveler'
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     setFormData({
@@ -18,10 +23,55 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Register submitted:', formData);
-    // Handle registration logic here
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const data = {
+        full_name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role.toLowerCase()
+      };
+
+      const result = await register(data);
+
+      if (result.success) {
+        const userRole = result.user.role;
+        switch(userRole) {
+          case "traveler":
+            navigate("/traveler/dashboard");
+            break;
+          case "guide":
+            navigate("/guide/dashboard");
+            break;
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          default:
+            navigate("/");
+        }
+      } else {
+        setError(result.error || 'Registration failed');
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -90,11 +140,14 @@ const Register = () => {
             >
               <option value="Traveler">Traveler</option>
               <option value="Guide">Guide</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
           
-          <button type="submit" className="register-button">
-            Register
+          {error && <div className="error-message">{error}</div>}
+
+          <button type="submit" className="register-button" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
         
